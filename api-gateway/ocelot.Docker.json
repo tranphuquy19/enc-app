@@ -1,0 +1,43 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hello-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/hello/{everything}",
+      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"]
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "view-service",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/views/{everything}",
+      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"]
+    },
+    {
+        "DownstreamPathTemplate": "/count/{everything}",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "view-service",
+            "Port": 80
+          }
+        ],
+        "UpstreamPathTemplate": "/views/count/{everything}",
+        "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"]
+      }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://api-gateway:8080"
+  }
+}

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.helloService.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "enc-app.commonLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.helloService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.helloService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.helloService.name }}
+    spec:
+      containers:
+      - name: {{ .Values.helloService.name }}
+        image: "{{ .Values.helloService.image.repository }}:{{ .Values.helloService.image.tag }}"
+        imagePullPolicy: {{ .Values.helloService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.helloService.service.targetPort }}
+        resources:
+          {{- include "enc-app.getResources" .Values.viewService.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.helloService.service.targetPort }}
+          initialDelaySeconds: {{ .Values.helloService.probes.initialDelaySeconds }}
+          periodSeconds: {{ .Values.helloService.probes.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.helloService.service.targetPort }}
+          initialDelaySeconds: {{ .Values.helloService.probes.initialDelaySeconds }}
+          periodSeconds: {{ .Values.helloService.probes.periodSeconds }}

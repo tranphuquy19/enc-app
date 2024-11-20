@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.viewService.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "enc-app.commonLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.viewService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.viewService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.viewService.name }}
+    spec:
+      containers:
+      - name: {{ .Values.viewService.name }}
+        image: "{{ .Values.viewService.image.repository }}:{{ .Values.viewService.image.tag }}"
+        imagePullPolicy: {{ .Values.viewService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.viewService.service.targetPort }}
+        env:
+        - name: REDIS_CONNECTION
+          value: {{ include "enc-app.redisConnection" . | quote }}
+        resources:
+          {{- include "enc-app.getResources" .Values.viewService.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.viewService.service.targetPort }}
+          initialDelaySeconds: {{ .Values.viewService.probes.initialDelaySeconds }}
+          periodSeconds: {{ .Values.viewService.probes.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.viewService.service.targetPort }}
+          initialDelaySeconds: {{ .Values.viewService.probes.initialDelaySeconds }}
+          periodSeconds: {{ .Values.viewService.probes.periodSeconds }}

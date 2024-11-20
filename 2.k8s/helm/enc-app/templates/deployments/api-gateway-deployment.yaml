@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.apiGateway.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "enc-app.commonLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.apiGateway.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.apiGateway.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apiGateway.name }}
+    spec:
+      containers:
+      - name: {{ .Values.apiGateway.name }}
+        image: "{{ .Values.apiGateway.image.repository }}:{{ .Values.apiGateway.image.tag }}"
+        imagePullPolicy: {{ .Values.apiGateway.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.apiGateway.service.targetPort }}
+        resources:
+          {{- include "enc-app.getResources" .Values.viewService.resources | nindent 10 }}
+        envFrom:
+        - configMapRef:
+            name: gateway-config

@@ -1,0 +1,105 @@
+# .NET Core
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/
+
+# Visual Studio Code
+.vscode
+.vs
+
+# Rider
+.idea
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Dependencies
+**/packages/*
+**/node_modules/
+
+# Visual Studio files
+*.VisualState.xml
+TestResult.xml
+[Bb]uild[Ll]og.*
+
+# NuGet
+*.nupkg
+*.snupkg
+# except build/, which is used as an MSBuild target
+!**/packages/build/
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile*
+docker-compose*
+.docker
+
+# Environment files
+*.env
+.env*
+appsettings.*.json
+!appsettings.json
+
+# Test files
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.TestResults
+*.trx
+*.log
+
+# Documentation
+README.md
+CHANGELOG.md
+docs/
+
+# Tools and utilities
+*.sh
+*.cmd
+*.bat
+*.ps1
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Local development
+*.Development.json
+*.Local.json

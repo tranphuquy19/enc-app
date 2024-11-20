@@ -1,0 +1,32 @@
+{{- $autoscaling := include "enc-app.getAutoscaling" .Values.helloService.autoscaling | fromYaml }}
+{{- if $autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Values.helloService.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "enc-app.commonLabels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Values.helloService.name }}
+  minReplicas: {{ $autoscaling.minReplicas }}
+  maxReplicas: {{ $autoscaling.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ $autoscaling.targetCPUUtilizationPercentage }}
+  {{- if $autoscaling.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ $autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+{{- end }}

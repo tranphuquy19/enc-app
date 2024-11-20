@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.helloService.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "enc-app.commonLabels" . | nindent 4 }}
+spec:
+  selector:
+    app: {{ .Values.helloService.name }}
+  ports:
+  - port: {{ .Values.helloService.service.port }}
+    targetPort: {{ .Values.helloService.service.targetPort }}

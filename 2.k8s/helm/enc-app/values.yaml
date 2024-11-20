@@ -1,0 +1,110 @@
+global:
+  environment: Production
+
+defaults:
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+ingress:
+  enabled: true
+  host: api.enclave-it.click
+
+apiGateway:
+  name: api-gateway
+  image:
+    repository: tranphuquy19/enc-app-api-gateway
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 8080
+  replicas: 1
+  resources:
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 75
+
+helloService:
+  name: hello-service
+  image:
+    repository: tranphuquy19/enc-app-hello-service
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 80
+    targetPort: 8080
+  replicas: 1
+  probes:
+    initialDelaySeconds: 15
+    periodSeconds: 30
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+viewService:
+  name: view-service
+  image:
+    repository: tranphuquy19/enc-app-view-service
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 80
+    targetPort: 8080
+  replicas: 1
+  probes:
+    initialDelaySeconds: 15
+    periodSeconds: 30
+  redis:
+    useInternal: true
+    connection: ""
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+redis:
+  name: redis
+  image:
+    repository: redis
+    tag: alpine
+    pullPolicy: IfNotPresent
+  service:
+    port: 6379
+    targetPort: 6379
+  persistence:
+    size: 1Gi
+  probes:
+    initialDelaySeconds: 15
+    periodSeconds: 10
